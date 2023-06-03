@@ -67,13 +67,14 @@ void		wait_or_die(t_data data, time_t time);
 int			init_mutex(t_table *f);
 int			init_threads(t_table *f);
 int			join_threads(t_table *f);
-void		routine(t_philo *philo);
+void		routine(void *arg);
 void		lifecycle(t_philo *philo);
 void		print_status(t_philo *philo, pthread_mutex_t *write, char *str);
 void		free_philo(t_table *f);
 void		free_struct(t_table *f);
 void		destroy_mutex(t_table *f);
-void	philo_die(t_table *f, time_t now, int index);
+void		philo_die(t_table *f, time_t now, int index);
 void		check_must_eat(t_table *f);
 void		philo_checker(t_table *f);
+int			next_philo_pos(t_philo *philo);
 #endif
