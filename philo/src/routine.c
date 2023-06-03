@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/04 00:01:30 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/04 00:48:17 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,6 @@ void	routine(void *arg)
 	t_philo *philo;
 
 	philo = (t_philo *)arg;
-	/*if (philo->philo_id == 1)
-	{
-		printf("philo 1 = %d\n", philo[0].philo_id);
-		printf("philo 2 = %d\n", philo[1].philo_id);
-		printf("philo 3 = %d\n", philo[2].philo_id);
-	}
-	if (philo->philo_id == 2)
-	{
-		printf("philo 1 = %d\n", philo[-1].philo_id);
-		printf("philo 2 = %d\n", philo[0].philo_id);
-		printf("philo 3 = %d\n", philo[1].philo_id);
-	}
-	if (philo->philo_id == 3)
-	{
-		printf("philo 1 = %d\n", philo[-2].philo_id);
-		printf("philo 2 = %d\n", philo[-1].philo_id);
-		printf("philo 3 = %d\n", philo[0].philo_id);
-	}*/
 	if (philo->data.number_of_philosophers == 1)
 	{
 		time = get_time() - philo->data.start_time;
@@ -59,7 +41,7 @@ int	next_philo_pos(t_philo *philo)
 
 	i = 0;
 	if (philo[i + 1].philo_id)
-		nextpos = philo->philo_id;
+		nextpos = i + 1;
 	else
 		while (philo[i].philo_id)
 		{
@@ -78,21 +60,15 @@ void	lifecycle(t_philo *philo)
 	{
 		pthread_mutex_lock(philo->fork);
 		print_status(philo, philo->data.write, FORK);
-		
 		nextpos = next_philo_pos(philo);
-		printf("philo %d	|	nextpos: %d\n", philo->philo_id, nextpos);
 		pthread_mutex_lock(philo[nextpos].fork);
-		
 		print_status(philo, philo->data.write, FORK);
 		print_status(philo, philo->data.write, EAT);
 		philo->last_meal = get_time() - philo->data.start_time;
 		philo->eat_count++;
 		wait_or_die(philo->data, philo->data.time_to_eat);
 		pthread_mutex_unlock(philo->fork);
-		
-		nextpos = next_philo_pos(philo);
 		pthread_mutex_unlock(philo[nextpos].fork);
-		
 		print_status(philo, philo->data.write, SLEEP);
 		wait_or_die(philo->data, philo->data.time_to_sleep);
 		print_status(philo, philo->data.write, THINK);
