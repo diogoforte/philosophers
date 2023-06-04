@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/04 00:48:17 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/04 01:36:27 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	routine(void *arg)
 {
 	time_t	time;
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)arg;
 	if (philo->data.number_of_philosophers == 1)
@@ -28,7 +28,7 @@ void	routine(void *arg)
 	else
 	{
 		if (philo->philo_id % 2)
-			wait_or_die(philo->data, philo->data.time_to_die);
+			wait_or_die(philo->data, 1);
 		if (!(*philo->data.someone_died))
 			lifecycle(philo);
 	}
@@ -37,18 +37,20 @@ void	routine(void *arg)
 int	next_philo_pos(t_philo *philo)
 {
 	int	nextpos;
-	int i;
+	int	i;
 
 	i = 0;
 	if (philo[i + 1].philo_id)
 		nextpos = i + 1;
 	else
+	{
 		while (philo[i].philo_id)
 		{
 			if (philo[i].philo_id == 1)
 				nextpos = i;
 			i--;
 		}
+	}
 	return (nextpos);
 }
 
@@ -75,18 +77,6 @@ void	lifecycle(t_philo *philo)
 	}
 }
 
-
-void	print_status(t_philo *philo, pthread_mutex_t *write, char *str)
-{
-	time_t	time;
-
-	time = get_time() - philo->data.start_time;
-	pthread_mutex_lock(write);
-	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
-		printf("%ld %d %s", time, philo->philo_id, str);
-	pthread_mutex_unlock(write);
-}
-
 void	philo_die(t_table *f, time_t now, int index)
 {
 	pthread_mutex_lock(f->data.death);
@@ -104,8 +94,9 @@ void	check_must_eat(t_table *f)
 	i = 0;
 	while (i < f->data.number_of_philosophers)
 	{
-		if (f->philo[i].eat_count < f->data.number_of_times_each_philosopher_must_eat)
-			return;
+		if (f->philo[i].eat_count
+			< f->data.number_of_times_each_philosopher_must_eat)
+			return ;
 		i++;
 	}
 	*f->data.full_eaten = 1;

@@ -87,10 +87,11 @@ int	init_mutex(t_table *f)
 void	philo_checker(t_table *f)
 {
 	time_t	now;
-	int i;
-	
+	int		i;
+
 	i = 0;
-	while (!(*f->data.someone_died) && !(*f->data.full_eaten) && f->data.number_of_philosophers > 1)
+	while (!(*f->data.someone_died) && !(*f->data.full_eaten)
+		&& f->data.number_of_philosophers > 1)
 	{
 		usleep(100);
 		while (i < f->data.number_of_philosophers)
@@ -99,7 +100,7 @@ void	philo_checker(t_table *f)
 			if (now >= f->philo[i].last_meal + f->data.time_to_die)
 			{
 				philo_die(f, now, i);
-				return;
+				return ;
 			}
 			i++;
 		}

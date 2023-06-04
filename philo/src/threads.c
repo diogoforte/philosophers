@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 00:47:52 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/03 23:05:08 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/04 01:09:36 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	init_threads(t_table *f)
 	i = 0;
 	while (i < f->data.number_of_philosophers)
 	{
-		if (pthread_create(&f->philo[i].thread, NULL, (void *)routine, &(f->philo[i])))
+		if (pthread_create(&f->philo[i].thread,
+				NULL, (void *)routine, &(f->philo[i])))
 			return (0);
 		i++;
 	}
