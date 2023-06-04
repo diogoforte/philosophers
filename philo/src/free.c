@@ -6,11 +6,18 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 06:53:24 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/02 07:19:01 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/04 03:17:06 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+void	free_all(t_table *f)
+{
+	free_philo(f);
+	free_struct(f);
+	destroy_mutex(f);
+}
 
 void	free_philo(t_table *f)
 {
@@ -25,6 +32,7 @@ void	free_philo(t_table *f)
 		{
 			pthread_mutex_destroy(f->philo[i].fork);
 			free(f->philo[i].fork);
+			f->philo[i].fork = NULL;
 		}
 	}
 	if (f->philo)
@@ -34,17 +42,33 @@ void	free_philo(t_table *f)
 void	free_struct(t_table *f)
 {
 	if (f->data.someone_died)
+	{
 		free(f->data.someone_died);
+		f->data.someone_died = NULL;
+	}
 	if (f->data.full_eaten)
+	{
 		free(f->data.full_eaten);
+		f->data.full_eaten = NULL;
+	}
 	if (f->data.death)
+	{
+		pthread_mutex_destroy(f->data.death);
 		free(f->data.death);
+		f->data.death = NULL;
+	}
 	if (f->data.write)
+	{
+		pthread_mutex_destroy(f->data.write);
 		free(f->data.write);
+		f->data.write = NULL;
+	}
 }
 
 void	destroy_mutex(t_table *f)
 {
-	pthread_mutex_destroy(f->data.death);
-	pthread_mutex_destroy(f->data.write);
+	if (f->data.death)
+		pthread_mutex_destroy(f->data.death);
+	if (f->data.write)
+		pthread_mutex_destroy(f->data.write);
 }

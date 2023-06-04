@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/04 01:36:27 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/04 02:33:06 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,12 @@ int	next_philo_pos(t_philo *philo)
 	int	nextpos;
 	int	i;
 
+	nextpos = 0;
 	i = 0;
-	if (philo[i + 1].philo_id)
+	if (philo->philo_id < philo->data.number_of_philosophers)
 		nextpos = i + 1;
 	else
-	{
-		while (philo[i].philo_id)
-		{
-			if (philo[i].philo_id == 1)
-				nextpos = i;
-			i--;
-		}
-	}
+		nextpos = -1 * (philo->data.number_of_philosophers - 1);
 	return (nextpos);
 }
 

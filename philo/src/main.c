@@ -24,9 +24,10 @@ int	main(int ac, char **av)
 	if (!check_input(ac, av))
 		return (1);
 	if (!init(&f, ac, av))
+	{
+		free_all(&f);
 		return (1);
-	free_philo(&f);
-	free_struct(&f);
-	destroy_mutex(&f);
+	}
+	free_all(&f);
 	return (0);
 }

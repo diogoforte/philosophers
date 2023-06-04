@@ -77,4 +77,5 @@ void		philo_die(t_table *f, time_t now, int index);
 void		check_must_eat(t_table *f);
 void		philo_checker(t_table *f);
 int			next_philo_pos(t_philo *philo);
+void		free_all(t_table *f);
 #endif
