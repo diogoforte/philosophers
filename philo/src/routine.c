@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/07 08:47:01 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 17:57:41 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	routine(void *arg)
 	else
 	{
 		if (philo->philo_id % 2)
-			wait_or_die(philo->data, 50);
+			wait_or_die(philo->data, 1);
 		pthread_mutex_lock(philo->data.death);
 		if (!(*philo->data.someone_died))
 		{
@@ -42,13 +42,37 @@ void	routine(void *arg)
 
 void	lifecycle(t_philo *philo)
 {
-	t_philo	*next_philo;
-
-	next_philo = &philo[next_philo_pos(philo)];
+	pthread_mutex_lock(philo->data.write);
+	pthread_mutex_lock(philo->data.meal);
 	pthread_mutex_lock(philo->data.death);
 	while (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
 	{
+		pthread_mutex_unlock(philo->data.write);
+		pthread_mutex_unlock(philo->data.meal);
 		pthread_mutex_unlock(philo->data.death);
+		forks(philo, 1);
+		actions(philo, 0);
+		forks(philo, 2);
+		actions(philo, 1);
+		pthread_mutex_lock(philo->data.write);
+		pthread_mutex_lock(philo->data.meal);
+		pthread_mutex_lock(philo->data.death);
+	}
+	pthread_mutex_unlock(philo->data.write);
+	pthread_mutex_unlock(philo->data.meal);
+	pthread_mutex_unlock(philo->data.death);
+}
+
+void	forks(t_philo *philo, int action)
+{
+	t_philo	*next_philo;
+
+		if (philo->philo_id < philo->data.number_of_philosophers)
+			next_philo = &philo[philo->philo_id];
+		else
+			next_philo = &philo[-1 * (philo->data.number_of_philosophers - 1)];
+	if (action == 1)
+	{
 		if (philo->philo_id < next_philo->philo_id)
 		{
 			pthread_mutex_lock(philo->fork);
@@ -59,27 +83,12 @@ void	lifecycle(t_philo *philo)
 			pthread_mutex_lock(next_philo->fork);
 			pthread_mutex_lock(philo->fork);
 		}
-		actions(philo, 0);
-		pthread_mutex_unlock(philo->fork);
-		pthread_mutex_unlock(philo[next_philo_pos(philo)].fork);
-		actions(philo, 1);
-		pthread_mutex_lock(philo->data.death);
 	}
-	pthread_mutex_unlock(philo->data.death);
-}
-
-int	next_philo_pos(t_philo *philo)
-{
-	int	nextpos;
-	int	i;
-
-	nextpos = 0;
-	i = 0;
-	if (philo->philo_id < philo->data.number_of_philosophers)
-		nextpos = i + 1;
-	else
-		nextpos = -1 * (philo->data.number_of_philosophers - 1);
-	return (nextpos);
+	else if (action == 2)
+	{
+		pthread_mutex_unlock(philo->fork);
+		pthread_mutex_unlock(next_philo->fork);
+	}
 }
 
 void	actions(t_philo *philo, int action)
@@ -95,7 +104,7 @@ void	actions(t_philo *philo, int action)
 		pthread_mutex_unlock(philo->data.meal);
 		wait_or_die(philo->data, philo->data.time_to_eat);
 	}
-	else if (action == 1)
+	else if (action == 2)
 	{
 		print_status(philo, SLEEP);
 		wait_or_die(philo->data, philo->data.time_to_sleep);

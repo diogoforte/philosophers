@@ -69,12 +69,12 @@ void	print_status(t_philo *philo, char *str)
 	time_t	time;
 
 	time = get_time() - philo->data.start_time;
-	pthread_mutex_lock(philo->data.death);
 	pthread_mutex_lock(philo->data.write);
+	pthread_mutex_lock(philo->data.death);
 	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
 		printf("%ld %d %s", time, philo->philo_id, str);
-	pthread_mutex_unlock(philo->data.death);
 	pthread_mutex_unlock(philo->data.write);
+	pthread_mutex_unlock(philo->data.death);
 }
 
 time_t	get_time(void)

@@ -75,7 +75,7 @@ int			join_threads(t_table *f);
 /* Routine and cycle functions */
 void		routine(void *arg);
 void		lifecycle(t_philo *philo);
-int			next_philo_pos(t_philo *philo);
+void	forks(t_philo *philo, int action);
 void		actions(t_philo *philo, int action);
 void		wait_or_die(t_data data, time_t time);
 
