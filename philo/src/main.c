@@ -22,9 +22,13 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	if (!check_input(ac, av))
+	{
+		printf("Error: Invalid arguments\n");
 		return (1);
+	}
 	if (!init(&f, ac, av))
 	{
+		printf("Error: Initializing arguments\n");
 		free_all(&f);
 		return (1);
 	}

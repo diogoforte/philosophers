@@ -38,6 +38,7 @@ typedef struct s_data
 	time_t			start_time;
 	pthread_mutex_t	*death;
 	pthread_mutex_t	*write;
+	pthread_mutex_t	*meal;
 }	t_data;
 
 typedef struct s_philo
@@ -69,13 +70,14 @@ int			init_threads(t_table *f);
 int			join_threads(t_table *f);
 void		routine(void *arg);
 void		lifecycle(t_philo *philo);
-void		print_status(t_philo *philo, pthread_mutex_t *write, char *str);
+void		print_status(t_philo *philo, char *str);
 void		free_philo(t_table *f);
 void		free_struct(t_table *f);
 void		destroy_mutex(t_table *f);
 void		philo_die(t_table *f, time_t now, int index);
-void		check_must_eat(t_table *f);
-void		philo_checker(t_table *f);
+void		must_eat(t_table *f);
+void		checker(t_table *f);
 int			next_philo_pos(t_philo *philo);
 void		free_all(t_table *f);
+void		actions(t_philo *philo, int action);
 #endif

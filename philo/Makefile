@@ -15,7 +15,7 @@ NAME = philo
 
 # Compiler
 CC = cc
-CFLAGS = -Werror -Wextra -Wall
+CFLAGS = -Werror -Wextra -Wall -fsanitize=thread
 
 # Includes
 INC = -I ./inc/
@@ -28,7 +28,7 @@ OBJ_PATH = obj/
 SRC = $(wildcard $(SRC_PATH)*.c)
 
 # Objects
-OBJ = $(patsubst $(SRC_PATH)%.c,$(OBJ_PATH)%.o,$(SRC))
+OBJ = $(SRC:$(SRC_PATH)%.c=$(OBJ_PATH)%.o)
 
 all: $(NAME)
 

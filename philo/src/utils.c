@@ -12,17 +12,6 @@
 
 #include "../inc/philo.h"
 
-void	print_status(t_philo *philo, pthread_mutex_t *write, char *str)
-{
-	time_t	time;
-
-	time = get_time() - philo->data.start_time;
-	pthread_mutex_lock(write);
-	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
-		printf("%ld %d %s", time, philo->philo_id, str);
-	pthread_mutex_unlock(write);
-}
-
 int	check_input(int ac, char **av)
 {
 	while (av[--ac] && ac > 0)

@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/04 02:33:06 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 07:01:51 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,43 @@ void	routine(void *arg)
 	{
 		if (philo->philo_id % 2)
 			wait_or_die(philo->data, 1);
+		pthread_mutex_lock(philo->data.death);
 		if (!(*philo->data.someone_died))
+		{
+			pthread_mutex_unlock(philo->data.death);
 			lifecycle(philo);
+		}
+		else
+			pthread_mutex_unlock(philo->data.death);
 	}
+}
+
+void	lifecycle(t_philo *philo)
+{
+	t_philo	*next_philo;
+
+	next_philo = &philo[next_philo_pos(philo)];
+	pthread_mutex_lock(philo->data.death);
+	while (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
+	{
+		pthread_mutex_unlock(philo->data.death);
+		if (philo->philo_id < next_philo->philo_id)
+		{
+			pthread_mutex_lock(philo->fork);
+			pthread_mutex_lock(next_philo->fork);
+		}
+		else
+		{
+			pthread_mutex_lock(next_philo->fork);
+			pthread_mutex_lock(philo->fork);
+		}
+		actions(philo, 0);
+		pthread_mutex_unlock(philo->fork);
+		pthread_mutex_unlock(philo[next_philo_pos(philo)].fork);
+		actions(philo, 1);
+		pthread_mutex_lock(philo->data.death);
+	}
+	pthread_mutex_unlock(philo->data.death);
 }
 
 int	next_philo_pos(t_philo *philo)
@@ -48,50 +82,36 @@ int	next_philo_pos(t_philo *philo)
 	return (nextpos);
 }
 
-void	lifecycle(t_philo *philo)
+void	actions(t_philo *philo, int action)
 {
-	int	nextpos;
-
-	while (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
+	if (action == 0)
 	{
-		pthread_mutex_lock(philo->fork);
-		print_status(philo, philo->data.write, FORK);
-		nextpos = next_philo_pos(philo);
-		pthread_mutex_lock(philo[nextpos].fork);
-		print_status(philo, philo->data.write, FORK);
-		print_status(philo, philo->data.write, EAT);
+		print_status(philo, FORK);
+		print_status(philo, FORK);
+		print_status(philo, EAT);
+		pthread_mutex_lock(philo->data.meal);
 		philo->last_meal = get_time() - philo->data.start_time;
 		philo->eat_count++;
+		pthread_mutex_unlock(philo->data.meal);
 		wait_or_die(philo->data, philo->data.time_to_eat);
-		pthread_mutex_unlock(philo->fork);
-		pthread_mutex_unlock(philo[nextpos].fork);
-		print_status(philo, philo->data.write, SLEEP);
-		wait_or_die(philo->data, philo->data.time_to_sleep);
-		print_status(philo, philo->data.write, THINK);
 	}
-}
-
-void	philo_die(t_table *f, time_t now, int index)
-{
-	pthread_mutex_lock(f->data.death);
-	pthread_mutex_lock(f->data.write);
-	printf("%ld %d %s", now, f->philo[index].philo_id, DIE);
-	*f->data.someone_died = 1;
-	pthread_mutex_unlock(f->data.write);
-	pthread_mutex_unlock(f->data.death);
-}
-
-void	check_must_eat(t_table *f)
-{
-	int	i;
-
-	i = 0;
-	while (i < f->data.number_of_philosophers)
+	else if (action == 1)
 	{
-		if (f->philo[i].eat_count
-			< f->data.number_of_times_each_philosopher_must_eat)
-			return ;
-		i++;
+		print_status(philo, SLEEP);
+		wait_or_die(philo->data, philo->data.time_to_sleep);
+		print_status(philo, THINK);
 	}
-	*f->data.full_eaten = 1;
+}
+
+void	print_status(t_philo *philo, char *str)
+{
+	time_t	time;
+
+	time = get_time() - philo->data.start_time;
+	pthread_mutex_lock(philo->data.death);
+	pthread_mutex_lock(philo->data.write);
+	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
+		printf("%ld %d %s", time, philo->philo_id, str);
+	pthread_mutex_unlock(philo->data.death);
+	pthread_mutex_unlock(philo->data.write);
 }

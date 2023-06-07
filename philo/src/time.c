@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 17:57:41 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/02 07:23:32 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 06:32:43 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	wait_or_die(t_data data, time_t time)
 	time_t	start;
 	time_t	now;
 
+	pthread_mutex_lock(data.meal);
 	start = get_time();
 	while (!(*data.someone_died))
 	{
@@ -36,4 +37,5 @@ void	wait_or_die(t_data data, time_t time)
 			break ;
 		usleep(100);
 	}
+	pthread_mutex_unlock(data.meal);
 }

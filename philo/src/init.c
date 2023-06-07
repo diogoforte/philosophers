@@ -29,7 +29,7 @@ int	init(t_table *f, int ac, char **av)
 		return (0);
 	if (!init_threads(f))
 		return (0);
-	philo_checker(f);
+	checker(f);
 	if (!join_threads(f))
 		return (0);
 	return (1);
@@ -76,36 +76,12 @@ int	init_mutex(t_table *f)
 {
 	f->data.death = malloc(sizeof(pthread_mutex_t));
 	f->data.write = malloc(sizeof(pthread_mutex_t));
-	if (!f->data.death || !f->data.write)
+	f->data.meal = malloc(sizeof(pthread_mutex_t));
+	if (!f->data.death || !f->data.write || !f->data.meal)
 		return (0);
 	if (pthread_mutex_init(f->data.death, NULL)
-		|| pthread_mutex_init(f->data.write, NULL))
+		|| pthread_mutex_init(f->data.write, NULL)
+		|| pthread_mutex_init(f->data.meal, NULL))
 		return (0);
 	return (1);
-}
-
-void	philo_checker(t_table *f)
-{
-	time_t	now;
-	int		i;
-
-	i = 0;
-	while (!(*f->data.someone_died) && !(*f->data.full_eaten)
-		&& f->data.number_of_philosophers > 1)
-	{
-		usleep(100);
-		while (i < f->data.number_of_philosophers)
-		{
-			now = get_time() - f->data.start_time;
-			if (now >= f->philo[i].last_meal + f->data.time_to_die)
-			{
-				philo_die(f, now, i);
-				return ;
-			}
-			i++;
-		}
-		i = 0;
-		if (f->data.number_of_times_each_philosopher_must_eat != -1)
-			check_must_eat(f);
-	}
 }

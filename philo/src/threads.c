@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 00:47:52 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/04 01:09:36 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 05:12:27 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ int	join_threads(t_table *f)
 	while (i < f->data.number_of_philosophers)
 	{
 		if (pthread_join(f->philo[i].thread, NULL))
-			return (1);
+			return (0);
 		i++;
 	}
-	return (0);
+	return (1);
 }
