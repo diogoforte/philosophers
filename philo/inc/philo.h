@@ -20,11 +20,11 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-# define FORK	"has taken a fork\n"
-# define EAT	"is eating\n"
-# define SLEEP	"is sleeping\n"
-# define THINK	"is thinking\n"
-# define DIE	"died\n"
+# define FORK   "has taken a fork\n"
+# define EAT    "is eating\n"
+# define SLEEP  "is sleeping\n"
+# define THINK  "is thinking\n"
+# define DIE    "died\n"
 
 typedef struct s_data
 {
@@ -57,27 +57,37 @@ typedef struct s_table
 	t_philo	*philo;
 }	t_table;
 
+/* Utility functions */
 int			check_input(int ac, char **av);
 int			check_num(char *av);
 int			ft_atoi(char *str);
+void		print_status(t_philo *philo, char *str);
+time_t		get_time(void);
+
+/* Initialization functions */
 int			init(t_table *f, int ac, char **av);
 int			init_data(t_table *f, int ac, char **av);
 int			init_philo(t_table *f);
-time_t		get_time(void);
-void		wait_or_die(t_data data, time_t time);
 int			init_mutex(t_table *f);
 int			init_threads(t_table *f);
 int			join_threads(t_table *f);
+
+/* Routine and cycle functions */
 void		routine(void *arg);
 void		lifecycle(t_philo *philo);
-void		print_status(t_philo *philo, char *str);
+int			next_philo_pos(t_philo *philo);
+void		actions(t_philo *philo, int action);
+void		wait_or_die(t_data data, time_t time);
+
+/* Check functions */
+void		checker(t_table *f);
+void		philo_die(t_table *f, time_t now, int index);
+void		must_eat(t_table *f);
+
+/* Freeing and destruction functions */
+void		free_all(t_table *f);
 void		free_philo(t_table *f);
 void		free_struct(t_table *f);
 void		destroy_mutex(t_table *f);
-void		philo_die(t_table *f, time_t now, int index);
-void		must_eat(t_table *f);
-void		checker(t_table *f);
-int			next_philo_pos(t_philo *philo);
-void		free_all(t_table *f);
-void		actions(t_philo *philo, int action);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/07 07:06:17 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 08:47:01 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	routine(void *arg)
 	else
 	{
 		if (philo->philo_id % 2)
-			wait_or_die(philo->data, 1);
+			wait_or_die(philo->data, 50);
 		pthread_mutex_lock(philo->data.death);
 		if (!(*philo->data.someone_died))
 		{
@@ -103,15 +103,19 @@ void	actions(t_philo *philo, int action)
 	}
 }
 
-void	print_status(t_philo *philo, char *str)
+void	wait_or_die(t_data data, time_t time)
 {
-	time_t	time;
+	time_t	start;
+	time_t	now;
 
-	time = get_time() - philo->data.start_time;
-	pthread_mutex_lock(philo->data.death);
-	pthread_mutex_lock(philo->data.write);
-	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
-		printf("%ld %d %s", time, philo->philo_id, str);
-	pthread_mutex_unlock(philo->data.death);
-	pthread_mutex_unlock(philo->data.write);
+	pthread_mutex_lock(data.meal);
+	start = get_time();
+	while (!(*data.someone_died))
+	{
+		now = get_time();
+		if (now - start >= time)
+			break ;
+		usleep(100);
+	}
+	pthread_mutex_unlock(data.meal);
 }

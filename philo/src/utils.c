@@ -63,3 +63,27 @@ int	ft_atoi(char *str)
 	}
 	return (res *= sign);
 }
+
+void	print_status(t_philo *philo, char *str)
+{
+	time_t	time;
+
+	time = get_time() - philo->data.start_time;
+	pthread_mutex_lock(philo->data.death);
+	pthread_mutex_lock(philo->data.write);
+	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
+		printf("%ld %d %s", time, philo->philo_id, str);
+	pthread_mutex_unlock(philo->data.death);
+	pthread_mutex_unlock(philo->data.write);
+}
+
+time_t	get_time(void)
+{
+	struct timeval	current_time;
+
+	if (gettimeofday(&current_time, NULL) < 0)
+	{
+		return (0);
+	}
+	return ((current_time.tv_sec * 1000) + (current_time.tv_usec / 1000));
+}
