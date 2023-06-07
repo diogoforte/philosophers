@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 05:53:36 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/07 06:37:05 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 08:12:54 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	checker(t_table *f)
 		&& f->data.number_of_philosophers > 1)
 	{
 		usleep(100);
+		i = 0;
 		while (i < f->data.number_of_philosophers)
 		{
 			now = get_time() - f->data.start_time;
@@ -35,7 +36,6 @@ void	checker(t_table *f)
 			pthread_mutex_unlock(f->philo->data.meal);
 			i++;
 		}
-		i = 0;
 		if (f->data.number_of_times_each_philosopher_must_eat != -1)
 			must_eat(f);
 	}
@@ -61,7 +61,10 @@ void	must_eat(t_table *f)
 	{
 		if (f->philo[i].eat_count
 			< f->data.number_of_times_each_philosopher_must_eat)
-			return ;
+			{
+				pthread_mutex_unlock(f->data.meal);
+				return ;
+			}
 		i++;
 	}
 	pthread_mutex_unlock(f->data.meal);
