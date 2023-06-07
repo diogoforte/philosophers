@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 06:53:24 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/04 03:17:06 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/07 08:58:23 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ void	free_struct(t_table *f)
 		free(f->data.full_eaten);
 		f->data.full_eaten = NULL;
 	}
+}
+
+void	destroy_mutex(t_table *f)
+{
 	if (f->data.death)
 	{
 		pthread_mutex_destroy(f->data.death);
@@ -63,12 +67,10 @@ void	free_struct(t_table *f)
 		free(f->data.write);
 		f->data.write = NULL;
 	}
-}
-
-void	destroy_mutex(t_table *f)
-{
-	if (f->data.death)
-		pthread_mutex_destroy(f->data.death);
-	if (f->data.write)
-		pthread_mutex_destroy(f->data.write);
+	if (f->data.meal)
+	{
+		pthread_mutex_destroy(f->data.meal);
+		free(f->data.meal);
+		f->data.meal = NULL;
+	}
 }
