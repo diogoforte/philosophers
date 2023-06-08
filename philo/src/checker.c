@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 05:53:36 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/08 05:10:08 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/08 06:01:52 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	checker(t_table *f)
 	while (!(*f->data.someone_died) && !(*f->data.full_eaten)
 		&& f->data.number_of_philosophers > 1)
 	{
-		usleep(1000);
 		i = 0;
 		pthread_mutex_lock(f->philo->data.meal);
 		while (i < f->data.number_of_philosophers)
