@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/08 04:57:28 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/08 05:58:47 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ void	forks(t_philo *philo, int action)
 {
 	t_philo	*next_philo;
 
-		if (philo->philo_id < philo->data.number_of_philosophers)
-			next_philo = &philo[philo->philo_id];
-		else
-			next_philo = &philo[-1 * (philo->data.number_of_philosophers - 1)];
+	if (philo->philo_id < philo->data.number_of_philosophers)
+		next_philo = &philo[1];
+	else
+		next_philo = &philo[-1 * (philo->data.number_of_philosophers - 1)];
 	if (action == 1)
 	{
 		if (philo->philo_id < next_philo->philo_id)
@@ -79,7 +79,7 @@ void	forks(t_philo *philo, int action)
 			pthread_mutex_lock(philo->fork);
 			pthread_mutex_lock(next_philo->fork);
 		}
-		else
+		else if (philo->philo_id > next_philo->philo_id)
 		{
 			pthread_mutex_lock(next_philo->fork);
 			pthread_mutex_lock(philo->fork);
