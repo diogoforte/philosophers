@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/07 17:57:41 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/08 04:57:28 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,25 @@ void	routine(void *arg)
 
 void	lifecycle(t_philo *philo)
 {
-	pthread_mutex_lock(philo->data.write);
 	pthread_mutex_lock(philo->data.meal);
+	pthread_mutex_lock(philo->data.write);
 	pthread_mutex_lock(philo->data.death);
 	while (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
 	{
-		pthread_mutex_unlock(philo->data.write);
+		usleep(1000);
 		pthread_mutex_unlock(philo->data.meal);
+		pthread_mutex_unlock(philo->data.write);
 		pthread_mutex_unlock(philo->data.death);
 		forks(philo, 1);
 		actions(philo, 0);
 		forks(philo, 2);
 		actions(philo, 1);
-		pthread_mutex_lock(philo->data.write);
 		pthread_mutex_lock(philo->data.meal);
+		pthread_mutex_lock(philo->data.write);
 		pthread_mutex_lock(philo->data.death);
 	}
-	pthread_mutex_unlock(philo->data.write);
 	pthread_mutex_unlock(philo->data.meal);
+	pthread_mutex_unlock(philo->data.write);
 	pthread_mutex_unlock(philo->data.death);
 }
 
@@ -117,8 +118,8 @@ void	wait_or_die(t_data data, time_t time)
 	time_t	start;
 	time_t	now;
 
-	pthread_mutex_lock(data.meal);
 	start = get_time();
+	pthread_mutex_lock(data.death);
 	while (!(*data.someone_died))
 	{
 		now = get_time();
@@ -126,5 +127,5 @@ void	wait_or_die(t_data data, time_t time)
 			break ;
 		usleep(100);
 	}
-	pthread_mutex_unlock(data.meal);
+	pthread_mutex_unlock(data.death);
 }

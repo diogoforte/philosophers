@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 05:53:36 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/07 17:58:15 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/08 05:10:08 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	checker(t_table *f)
 	while (!(*f->data.someone_died) && !(*f->data.full_eaten)
 		&& f->data.number_of_philosophers > 1)
 	{
-		//usleep(100);
+		usleep(1000);
 		i = 0;
 		pthread_mutex_lock(f->philo->data.meal);
 		while (i < f->data.number_of_philosophers)
@@ -43,12 +43,12 @@ void	checker(t_table *f)
 
 void	philo_die(t_table *f, time_t now, int index)
 {
-	pthread_mutex_lock(f->data.death);
 	pthread_mutex_lock(f->data.write);
-	printf("%ld %d %s", now, f->philo[index].philo_id, DIE);
+	pthread_mutex_lock(f->data.death);
+	printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s", now, f->philo[index].philo_id, DIE);
 	*f->data.someone_died = 1;
-	pthread_mutex_unlock(f->data.death);
 	pthread_mutex_unlock(f->data.write);
+	pthread_mutex_unlock(f->data.death);
 }
 
 void	must_eat(t_table *f)
@@ -56,20 +56,20 @@ void	must_eat(t_table *f)
 	int	i;
 
 	i = 0;
-	pthread_mutex_lock(f->data.write);
 	pthread_mutex_lock(f->data.meal);
+	pthread_mutex_lock(f->data.write);
 	while (i < f->data.number_of_philosophers)
 	{
 		if (f->philo[i].eat_count
 			< f->data.number_of_times_each_philosopher_must_eat)
 		{
-			pthread_mutex_unlock(f->data.write);
 			pthread_mutex_unlock(f->data.meal);
+			pthread_mutex_unlock(f->data.write);
 			return ;
 		}
 		i++;
 	}
 	*f->data.full_eaten = 1;
-	pthread_mutex_unlock(f->data.write);
 	pthread_mutex_unlock(f->data.meal);
+	pthread_mutex_unlock(f->data.write);
 }
