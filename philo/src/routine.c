@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/10 01:06:15 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/10 21:04:16 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	lifecycle(t_philo *philo)
 {
 	while (1)
 	{
+		usleep(100);
 		if (!lock(philo))
 			return ;
 		forks(philo, 1);

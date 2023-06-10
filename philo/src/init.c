@@ -39,7 +39,8 @@ int	init_data(t_table *f, int ac, char **av)
 	else
 		f->data.times_must_eat = -1;
 	if (f->data.number_of_philo <= 0 || f->data.time_to_die <= 0
-		|| f->data.time_to_eat <= 0 || f->data.time_to_sleep <= 0)
+		|| f->data.time_to_eat <= 0 || f->data.time_to_sleep <= 0
+		|| (ac == 6 && f->data.times_must_eat <= 0))
 		return (0);
 	return (1);
 }
