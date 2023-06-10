@@ -68,13 +68,9 @@ void	print_status(t_philo *philo, char *str)
 {
 	time_t	time;
 
-	time = get_time() - philo->data.start_time;
-	pthread_mutex_lock(philo->data.write);
-	pthread_mutex_lock(philo->data.death);
-	if (!(*philo->data.someone_died) && !(*philo->data.full_eaten))
-		printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s", time, philo->philo_id, str);
-	pthread_mutex_unlock(philo->data.write);
-	pthread_mutex_unlock(philo->data.death);
+	time = get_time() - philo->data->start_time;
+	printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s",
+		time, philo->philo_id, str);
 }
 
 time_t	get_time(void)

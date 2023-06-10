@@ -28,17 +28,12 @@
 
 typedef struct s_data
 {
-	int				number_of_philosophers;
+	int				number_of_philo;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				number_of_times_each_philosopher_must_eat;
-	int				*someone_died;
-	int				*full_eaten;
+	int				times_must_eat;
 	time_t			start_time;
-	pthread_mutex_t	*death;
-	pthread_mutex_t	*write;
-	pthread_mutex_t	*meal;
 }	t_data;
 
 typedef struct s_philo
@@ -46,9 +41,13 @@ typedef struct s_philo
 	int				philo_id;
 	int				eat_count;
 	int				last_meal;
+	int				dead;
+	int				full;
 	pthread_t		thread;
+	pthread_mutex_t	*life;
+	pthread_mutex_t	*food;
 	pthread_mutex_t	*fork;
-	t_data			data;
+	t_data			*data;
 }	t_philo;
 
 typedef struct s_table
@@ -68,26 +67,23 @@ time_t		get_time(void);
 int			init(t_table *f, int ac, char **av);
 int			init_data(t_table *f, int ac, char **av);
 int			init_philo(t_table *f);
-int			init_mutex(t_table *f);
 int			init_threads(t_table *f);
 int			join_threads(t_table *f);
 
 /* Routine and cycle functions */
 void		routine(void *arg);
 void		lifecycle(t_philo *philo);
-void	forks(t_philo *philo, int action);
+void		forks(t_philo *philo, int action);
 void		actions(t_philo *philo, int action);
-void		wait_or_die(t_data data, time_t time);
+void		wait_or_die(t_philo *philo, time_t time);
 
 /* Check functions */
 void		checker(t_table *f);
-void		philo_die(t_table *f, time_t now, int index);
-void		must_eat(t_table *f);
+void		philo_kill(t_table *f, int index);
+void		philo_full(t_table *f);
+int			lock(t_philo *philo);
 
-/* Freeing and destruction functions */
-void		free_all(t_table *f);
+/* Freeing functions */
 void		free_philo(t_table *f);
-void		free_struct(t_table *f);
-void		destroy_mutex(t_table *f);
 
 #endif

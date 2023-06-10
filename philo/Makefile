@@ -15,7 +15,7 @@ NAME = philo
 
 # Compiler
 CC = cc
-CFLAGS = -Werror -Wextra -Wall -fsanitize=thread
+CFLAGS = -Werror -Wextra -Wall -fsanitize=thread -pthread
 # Includes
 INC = -I ./inc/
 

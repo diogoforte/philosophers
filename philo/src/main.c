@@ -29,9 +29,9 @@ int	main(int ac, char **av)
 	if (!init(&f, ac, av))
 	{
 		printf("Error: Initializing arguments\n");
-		free_all(&f);
+		free_philo(&f);
 		return (1);
 	}
-	free_all(&f);
+	free_philo(&f);
 	return (0);
 }
