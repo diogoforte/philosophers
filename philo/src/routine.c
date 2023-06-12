@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/10 21:04:16 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/12 15:32:47 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	routine(void *arg)
 	philo = (t_philo *)arg;
 	if (philo->data->number_of_philo == 1)
 	{
-		time = get_time() - philo->data->start_time;
+		time = philo->data->time_to_die;
 		wait_or_die(philo, philo->data->time_to_die);
 		printf("%ld %d %s", time, philo->philo_id, DIE);
 		return ;
@@ -28,7 +28,11 @@ void	routine(void *arg)
 	else
 	{
 		if (philo->philo_id % 2)
-			wait_or_die(philo, 1);
+		{
+			wait_or_die(philo, philo->data->number_of_philo);
+			if (!lock(philo))
+				return ;
+		}
 		if (!(philo->dead))
 			lifecycle(philo);
 	}

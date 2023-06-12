@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 05:53:36 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/10 20:58:07 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/12 19:21:05 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	checker(t_table *f)
 
 void	philo_kill(t_table *f, int index)
 {
-	int	i;
+	int		i;
+	time_t	time;
 
 	i = 0;
 	while (i < f->data.number_of_philo)
@@ -48,7 +49,9 @@ void	philo_kill(t_table *f, int index)
 		pthread_mutex_unlock(f->philo[i].life);
 		i++;
 	}
-	print_status(&f->philo[index], DIE);
+	time = get_time() - f->philo->data->start_time;
+	printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s",
+		time, index, DIE);
 }
 
 void	philo_full(t_table *f)

@@ -15,6 +15,7 @@
 int	init(t_table *f, int ac, char **av)
 {
 	f->data.start_time = get_time();
+	f->philo = NULL;
 	if (!init_data(f, ac, av))
 		return (0);
 	if (!init_philo(f))
@@ -86,14 +87,17 @@ void	free_philo(t_table *f)
 		if (f->philo[i].fork)
 		{
 			pthread_mutex_destroy(f->philo[i].fork);
-			pthread_mutex_destroy(f->philo[i].life);
-			pthread_mutex_destroy(f->philo[i].food);
 			free(f->philo[i].fork);
+		}
+		if (f->philo[i].life)
+		{
+			pthread_mutex_destroy(f->philo[i].life);
 			free(f->philo[i].life);
+		}
+		if (f->philo[i].food)
+		{
+			pthread_mutex_destroy(f->philo[i].food);
 			free(f->philo[i].food);
-			f->philo[i].fork = NULL;
-			f->philo[i].life = NULL;
-			f->philo[i].food = NULL;
 		}
 	}
 	if (f->philo)
