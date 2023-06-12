@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 05:53:36 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/12 19:21:05 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/12 19:44:21 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	philo_kill(t_table *f, int index)
 	time_t	time;
 
 	i = 0;
+	if (!lock(f->philo))
+		return ;
 	while (i < f->data.number_of_philo)
 	{	
 		pthread_mutex_lock(f->philo[i].life);

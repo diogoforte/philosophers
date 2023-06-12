@@ -14,8 +14,8 @@
 
 int	init(t_table *f, int ac, char **av)
 {
-	f->data.start_time = get_time();
 	f->philo = NULL;
+	f->data.start_time = get_time();
 	if (!init_data(f, ac, av))
 		return (0);
 	if (!init_philo(f))
