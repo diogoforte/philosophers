@@ -70,7 +70,7 @@ void	print_status(t_philo *philo, char *str)
 
 	time = get_time() - philo->data->start_time;
 	if (!lock(philo))
-		return ;
+	 	return ;
 	printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s",
 		time, philo->philo_id, str);
 }

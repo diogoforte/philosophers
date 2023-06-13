@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/12 15:32:47 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/13 23:53:04 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,8 @@ void	routine(void *arg)
 	else
 	{
 		if (philo->philo_id % 2)
-		{
 			wait_or_die(philo, philo->data->number_of_philo);
-			if (!lock(philo))
-				return ;
-		}
-		if (!(philo->dead))
+		if (!philo->data->dead)
 			lifecycle(philo);
 	}
 }
@@ -42,9 +38,9 @@ void	lifecycle(t_philo *philo)
 {
 	while (1)
 	{
-		usleep(100);
 		if (!lock(philo))
 			return ;
+		usleep(100);
 		forks(philo, 1);
 		actions(philo, 1);
 		forks(philo, 2);
@@ -80,8 +76,6 @@ void	forks(t_philo *philo, int action)
 
 void	actions(t_philo *philo, int action)
 {
-	if (!lock(philo))
-		return ;
 	if (action == 1)
 	{
 		print_status(philo, FORK);
@@ -108,7 +102,7 @@ void	wait_or_die(t_philo *philo, time_t time)
 
 	start = get_time();
 	pthread_mutex_lock(philo->life);
-	while (!(philo->dead))
+	while (!philo->data->dead)
 	{
 		now = get_time();
 		if (now - start >= time)

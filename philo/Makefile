@@ -16,6 +16,7 @@ NAME = philo
 # Compiler
 CC = cc
 CFLAGS = -Werror -Wextra -Wall -pthread -fsanitize=thread
+
 # Includes
 INC = -I ./inc/
 
@@ -24,7 +25,7 @@ SRC_PATH = src/
 OBJ_PATH = obj/
 
 # Sources
-SRC = $(wildcard $(SRC_PATH)*.c)
+SRC = $(addprefix $(SRC_PATH), checker.c init.c main.c routine.c threads.c utils.c)
 
 # Objects
 OBJ = $(SRC:$(SRC_PATH)%.c=$(OBJ_PATH)%.o)
