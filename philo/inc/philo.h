@@ -81,7 +81,6 @@ void		wait_or_die(t_philo *philo, time_t time);
 void		checker(t_table *f);
 void		philo_kill(t_table *f, int index);
 void		philo_full(t_table *f);
-int			lock(t_philo *philo);
 
 /* Freeing functions */
 void		free_philo(t_table *f);
