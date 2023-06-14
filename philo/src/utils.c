@@ -69,8 +69,16 @@ void	print_status(t_philo *philo, char *str)
 	time_t	time;
 
 	time = get_time() - philo->data->start_time;
-	if (!lock(philo))
-	 	return ;
+	pthread_mutex_lock(philo->data->life);
+	pthread_mutex_lock(philo->data->food);
+	if (philo->data->dead || philo->data->full)
+	{
+		pthread_mutex_unlock(philo->data->life);
+		pthread_mutex_unlock(philo->data->food);
+		return ;
+	}
+	pthread_mutex_unlock(philo->data->life);
+	pthread_mutex_unlock(philo->data->food);
 	printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s",
 		time, philo->philo_id, str);
 }

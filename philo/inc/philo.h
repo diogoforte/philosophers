@@ -35,6 +35,8 @@ typedef struct s_data
 	int				times_must_eat;
 	int				full;
 	int				dead;
+	pthread_mutex_t	*life;
+	pthread_mutex_t	*food;
 	time_t			start_time;
 }	t_data;
 
@@ -44,8 +46,6 @@ typedef struct s_philo
 	int				eat_count;
 	int				last_meal;
 	pthread_t		thread;
-	pthread_mutex_t	*life;
-	pthread_mutex_t	*food;
 	pthread_mutex_t	*fork;
 	t_data			*data;
 }	t_philo;

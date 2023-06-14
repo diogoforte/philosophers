@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/13 23:53:04 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/14 02:12:16 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,16 @@ void	lifecycle(t_philo *philo)
 {
 	while (1)
 	{
-		if (!lock(philo))
+		pthread_mutex_lock(philo->data->life);
+		pthread_mutex_lock(philo->data->food);
+		if (philo->data->dead || philo->data->full)
+		{
+			pthread_mutex_unlock(philo->data->life);
+			pthread_mutex_unlock(philo->data->food);
 			return ;
+		}
+		pthread_mutex_unlock(philo->data->life);
+		pthread_mutex_unlock(philo->data->food);
 		usleep(100);
 		forks(philo, 1);
 		actions(philo, 1);
@@ -81,10 +89,10 @@ void	actions(t_philo *philo, int action)
 		print_status(philo, FORK);
 		print_status(philo, FORK);
 		print_status(philo, EAT);
-		pthread_mutex_lock(philo->food);
+		pthread_mutex_lock(philo->data->food);
 		philo->last_meal = get_time() - philo->data->start_time;
 		philo->eat_count++;
-		pthread_mutex_unlock(philo->food);
+		pthread_mutex_unlock(philo->data->food);
 		wait_or_die(philo, philo->data->time_to_eat);
 	}
 	else if (action == 2)
@@ -101,13 +109,18 @@ void	wait_or_die(t_philo *philo, time_t time)
 	time_t	now;
 
 	start = get_time();
-	pthread_mutex_lock(philo->life);
-	while (!philo->data->dead)
+	while (1)
 	{
+		pthread_mutex_lock(philo->data->life);
+		if (philo->data->dead)
+		{
+			pthread_mutex_unlock(philo->data->life);
+			return ;
+		}
+		pthread_mutex_unlock(philo->data->life);
 		now = get_time();
 		if (now - start >= time)
 			break ;
 		usleep(100);
 	}
-	pthread_mutex_unlock(philo->life);
 }

@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 05:53:36 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/14 00:00:06 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/14 02:18:36 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,14 @@ void	checker(t_table *f)
 		while (i < f->data->number_of_philo)
 		{
 			now = get_time() - f->data->start_time;
-			pthread_mutex_lock(f->philo[i].food);
+			pthread_mutex_lock(f->data->food);
 			if (now >= f->philo[i].last_meal + f->data->time_to_die)
+			{
+				pthread_mutex_unlock(f->data->food);
 				philo_kill(f, i);
-			pthread_mutex_unlock(f->philo[i].food);
+			}
+			else
+				pthread_mutex_unlock(f->data->food);
 			i++;
 		}
 		if (f->data->times_must_eat != -1)
@@ -38,21 +42,16 @@ void	checker(t_table *f)
 
 void	philo_kill(t_table *f, int index)
 {
-	int		i;
 	time_t	time;
 
-	i = 0;
 	time = get_time() - f->philo->data->start_time;
-	if (!lock(f->philo))
-			return ;
+	if (f->data->dead || f->data->full)
+		return ;
 	printf("\033[0;90m%ld	\033[0;91m%d \033[0;0m%s",
-		time, ++index, DIE);
-	while (i < f->philo->data->number_of_philo)
-		pthread_mutex_lock(f->philo[i++].life);
+		time, index + 1, DIE);
+	pthread_mutex_lock(f->data->life);
 	f->data->dead = 1;
-	i = 0;
-	while (i < f->philo->data->number_of_philo)
-		pthread_mutex_unlock(f->philo[i++].life);
+	pthread_mutex_unlock(f->data->life);
 }
 
 void	philo_full(t_table *f)
@@ -62,41 +61,16 @@ void	philo_full(t_table *f)
 	i = 0;
 	while (i < f->data->number_of_philo)
 	{
-		pthread_mutex_lock(f->philo[i].food);
+		pthread_mutex_lock(f->data->food);
 		if (f->philo[i].eat_count < f->data->times_must_eat)
 		{
-			pthread_mutex_unlock(f->philo[i].food);
+			pthread_mutex_unlock(f->data->food);
 			return ;
 		}
-		pthread_mutex_unlock(f->philo[i].food);
+		pthread_mutex_unlock(f->data->food);
 		i++;
 	}
-	i = 0;
-	while (i < f->philo->data->number_of_philo)
-	{
-		pthread_mutex_lock(f->philo[i].food);
-		i++;
-	}
+	pthread_mutex_lock(f->data->food);
 	f->data->full = 1;
-	i = 0;
-	while (i < f->philo->data->number_of_philo)
-	{
-		pthread_mutex_unlock(f->philo[i].food);
-		i++;
-	}
-}
-
-int	lock(t_philo *philo)
-{
-	pthread_mutex_lock(philo->food);
-	pthread_mutex_lock(philo->life);
-	if (philo->data->dead || philo->data->full)
-	{
-		pthread_mutex_unlock(philo->food);
-		pthread_mutex_unlock(philo->life);
-		return (0);
-	}
-	pthread_mutex_unlock(philo->food);
-	pthread_mutex_unlock(philo->life);
-	return (1);
+	pthread_mutex_unlock(f->data->food);
 }
