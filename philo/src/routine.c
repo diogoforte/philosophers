@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/14 02:12:16 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/14 08:01:29 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	lifecycle(t_philo *philo)
 		}
 		pthread_mutex_unlock(philo->data->life);
 		pthread_mutex_unlock(philo->data->food);
-		usleep(100);
 		forks(philo, 1);
 		actions(philo, 1);
 		forks(philo, 2);
