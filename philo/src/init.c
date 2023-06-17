@@ -39,21 +39,21 @@ int	init_data(t_table *f, int ac, char **av)
 	f->data->time_to_die = ft_atoi(av[2]);
 	f->data->time_to_eat = ft_atoi(av[3]);
 	f->data->time_to_sleep = ft_atoi(av[4]);
+	f->data->times_must_eat = -1;
 	if (ac == 6)
 		f->data->times_must_eat = ft_atoi(av[5]);
-	else
-		f->data->times_must_eat = -1;
 	if (f->data->number_of_philo <= 0 || f->data->time_to_die <= 0
-		|| f->data->time_to_eat <= 0 || f->data->time_to_sleep <= 0
-		|| (ac == 6 && f->data->times_must_eat <= 0))
+		|| f->data->time_to_eat <= 0 || f->data->time_to_sleep <= 0)
+	{
+		free(f->data);
 		return (0);
+	}
 	f->data->dead = 0;
 	f->data->full = 0;
 	f->data->life = malloc(sizeof(pthread_mutex_t));
 	f->data->food = malloc(sizeof(pthread_mutex_t));
-	if (!f->data->life || !f->data->food)
-		return (0);
-	if (pthread_mutex_init(f->data->life, NULL)
+	if (!f->data->life || !f->data->food
+		|| pthread_mutex_init(f->data->life, NULL)
 		|| pthread_mutex_init(f->data->food, NULL))
 		return (0);
 	return (1);

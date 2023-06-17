@@ -6,7 +6,7 @@
 /*   By: dinunes- <dinunes-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 01:06:34 by dinunes-          #+#    #+#             */
-/*   Updated: 2023/06/14 08:01:29 by dinunes-         ###   ########.fr       */
+/*   Updated: 2023/06/17 07:44:02 by dinunes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	lifecycle(t_philo *philo)
 {
 	while (1)
 	{
+		usleep(100);
 		pthread_mutex_lock(philo->data->life);
 		pthread_mutex_lock(philo->data->food);
 		if (philo->data->dead || philo->data->full)
